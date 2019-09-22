@@ -22,11 +22,11 @@ namespace ADBB
         {
             InitializeComponent();
 
-            _adb = new AdbCommand(Properties.Settings.Default.adbPath);
+            _adb = new AdbCommand(Properties.Settings.Default.adbPath, Properties.Settings.Default.mldbPath);
 
             //ADB.exeへのパスが設定されたら作り直し
             Properties.Settings.Default.PropertyChanged += (sender, args) => {
-                _adb = new AdbCommand(Properties.Settings.Default.adbPath);
+                _adb = new AdbCommand(Properties.Settings.Default.adbPath, Properties.Settings.Default.mldbPath);
             };
             
             Observable.FromEventPattern(textBox1, "TextChanged")
@@ -95,11 +95,13 @@ namespace ADBB
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(Properties.Settings.Default.adbPath))
+            if (string.IsNullOrWhiteSpace(Properties.Settings.Default.adbPath) || string.IsNullOrWhiteSpace(Properties.Settings.Default.mldbPath))
             {
-                ConfigToolStripMenuItem_Click(null, null);
+                MessageBox.Show("Setup the path to adb or mldb(Settings > )", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             UpdateDeviceList();
+
+
         }
 
         private async void uninstallToolStripMenuItem_Click(object sender, EventArgs e)
@@ -186,7 +188,8 @@ namespace ADBB
             _adb.Reboot(_targetDevice,progress);
         }
 
-        private void ConfigToolStripMenuItem_Click(object sender, EventArgs e)
+
+        private void pathToADBToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var openFileDialog = new OpenFileDialog{
                 Filter = "adb.exe|adb.exe",
@@ -197,6 +200,22 @@ namespace ADBB
             if (result != DialogResult.OK) return;
 
             Properties.Settings.Default.adbPath = openFileDialog.FileName;
+            Properties.Settings.Default.Save();
+        }
+
+        private void pathToMLDBToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var openFileDialog = new OpenFileDialog
+            {
+                Filter = "mldb.exe|mldb.exe",
+                Title = "mldb.exeのパス設定"
+            };
+            var result = openFileDialog.ShowDialog();
+
+            if (result != DialogResult.OK) return;
+
+            Properties.Settings.Default.mldbPath = openFileDialog.FileName;
+            Console.WriteLine($"set mldb to {Properties.Settings.Default.mldbPath} / {openFileDialog.FileName}");
             Properties.Settings.Default.Save();
         }
 
@@ -227,7 +246,9 @@ namespace ADBB
                 UpdateToolbarMenuEnable();
                 return false;
             }
+
             comboBox1.DataSource = result.ToList();
+            this.Text = $"ADBB ({_adb.type.ToString()})";
             return true;
         }
 
@@ -268,5 +289,7 @@ namespace ADBB
             if (result != DialogResult.OK) return;
             _adb.DownloadApk(_targetDevice, _selectPackage,  saveFileDialog.FileName, progress);
         }
+
+
     }
 }
