@@ -45,12 +45,12 @@ namespace ADBB
                 {
                     if (data.IsError)
                     {
-                        MessageBox.Show(data.Message, "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(data.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
 
                     if (data.IsSuccess)
                     {
-                        MessageBox.Show(data.Message, "成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(data.Message, "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
 
@@ -108,7 +108,7 @@ namespace ADBB
 
         private async void uninstallToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var result = MessageBox.Show($"{_selectPackage.Name} をアンインストールしてよろしいですか？", "注意", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation);
+            var result = MessageBox.Show($"Are you sure uninstall [{_selectPackage.Name}]?", "Confirm", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation);
             if (result == DialogResult.Cancel) return;
             var unInstallResult = await _adb.UnInstallPackage(_targetDevice, _selectPackage, progress);
             if (unInstallResult == false) return;
@@ -155,7 +155,7 @@ namespace ADBB
             dataRow.Cells[0].Selected = true;
             _selectPackage = dataRow.DataBoundItem as PackageData;
 
-            var result = MessageBox.Show($"{_selectPackage.Name} を起動してよろしいですか？", "起動確認", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation);
+            var result = MessageBox.Show($"Are you sure you want to start [{_selectPackage.Name}]?", "Confirm", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation);
             if (result == DialogResult.Cancel) return;
 
             _adb.LunchPackage(_targetDevice, _selectPackage, progress);
@@ -169,7 +169,7 @@ namespace ADBB
                 openFileDialog = new OpenFileDialog
                 {
                     Filter = "MagicLeap Application|*.mpk",
-                    Title = "インストールするAPKファイルを選択"
+                    Title = "Select mpk to install"
                 };
             }
             else
@@ -177,7 +177,7 @@ namespace ADBB
                 openFileDialog = new OpenFileDialog
                 {
                     Filter = "Android Application|*.apk",
-                    Title = "インストールするAPKファイルを選択"
+                    Title = "Select apk to install"
                 };
             }
 
@@ -192,14 +192,14 @@ namespace ADBB
 
         private void DeviceShutdownToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            var result = MessageBox.Show($"Device:{_targetDevice.Name} を強制シャットダウンしてよろしいですか？", "強制シャットダウン確認", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            var result = MessageBox.Show($"Shutdown the device:{_targetDevice.Name}？", "Shutdown", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
             if (result == DialogResult.Cancel) return;
             _adb.Shutdown(_targetDevice, progress);
         }
 
         private void DeviceRebootToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var result = MessageBox.Show($"Device:{_targetDevice.Name} を強制再起動してよろしいですか？", "強制再起動確認", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            var result = MessageBox.Show($"Reboot the device: {_targetDevice.Name}?", "Reboot", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
             if (result == DialogResult.Cancel) return;
             _adb.Reboot(_targetDevice, progress);
         }
@@ -210,7 +210,7 @@ namespace ADBB
             var openFileDialog = new OpenFileDialog
             {
                 Filter = "adb.exe|adb.exe",
-                Title = "adb.exeのパス設定"
+                Title = "Select the location to adb.exe"
             };
             var result = openFileDialog.ShowDialog();
 
@@ -225,7 +225,7 @@ namespace ADBB
             var openFileDialog = new OpenFileDialog
             {
                 Filter = "mldb.exe|mldb.exe",
-                Title = "mldb.exeのパス設定"
+                Title = "Select the location to mldb.exe"
             };
             var result = openFileDialog.ShowDialog();
 
@@ -260,7 +260,7 @@ namespace ADBB
 
             if (result?.Any() != true)
             {
-                MessageBox.Show("デバイスが見つかりません", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Device(s) not found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 _targetDevice = null;
                 UpdateToolbarMenuEnable();
                 return false;
@@ -305,8 +305,8 @@ namespace ADBB
                 {
                     AddExtension = true,
                     DefaultExt = "apk",
-                    Title = "ファイルダウンロード先を選択してください",
-                    Filter = "Androidファイル|*.apk"
+                    Title = "Select the location to download apk",
+                    Filter = "Android APK|*.apk"
 
                 };
 
@@ -317,6 +317,9 @@ namespace ADBB
             }
         }
 
+        private void DeviceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
 
+        }
     }
 }

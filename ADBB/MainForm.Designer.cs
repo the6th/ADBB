@@ -216,8 +216,8 @@
             // deviceUpdateToolStripMenuItem1
             // 
             this.deviceUpdateToolStripMenuItem1.Name = "deviceUpdateToolStripMenuItem1";
-            this.deviceUpdateToolStripMenuItem1.Size = new System.Drawing.Size(80, 20);
-            this.deviceUpdateToolStripMenuItem1.Text = "Device更新";
+            this.deviceUpdateToolStripMenuItem1.Size = new System.Drawing.Size(55, 20);
+            this.deviceUpdateToolStripMenuItem1.Text = "Reload";
             this.deviceUpdateToolStripMenuItem1.Click += new System.EventHandler(this.DeviceUpdateToolStripMenuItem_Click);
             // 
             // iPConnectToolStripMenuItem
@@ -226,21 +226,21 @@
             this.ipConnectToolStripMenuItem1,
             this.ipDisconnectToolStripMenuItem1});
             this.iPConnectToolStripMenuItem.Name = "iPConnectToolStripMenuItem";
-            this.iPConnectToolStripMenuItem.Size = new System.Drawing.Size(55, 20);
-            this.iPConnectToolStripMenuItem.Text = "IP接続";
+            this.iPConnectToolStripMenuItem.Size = new System.Drawing.Size(104, 20);
+            this.iPConnectToolStripMenuItem.Text = "TCP Connection";
             // 
             // ipConnectToolStripMenuItem1
             // 
             this.ipConnectToolStripMenuItem1.Name = "ipConnectToolStripMenuItem1";
-            this.ipConnectToolStripMenuItem1.Size = new System.Drawing.Size(100, 22);
-            this.ipConnectToolStripMenuItem1.Text = "開始";
+            this.ipConnectToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.ipConnectToolStripMenuItem1.Text = "Start (Port 5555)";
             this.ipConnectToolStripMenuItem1.Click += new System.EventHandler(this.IpConnectToolStripMenuItem_Click);
             // 
             // ipDisconnectToolStripMenuItem1
             // 
             this.ipDisconnectToolStripMenuItem1.Name = "ipDisconnectToolStripMenuItem1";
-            this.ipDisconnectToolStripMenuItem1.Size = new System.Drawing.Size(100, 22);
-            this.ipDisconnectToolStripMenuItem1.Text = "終了";
+            this.ipDisconnectToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.ipDisconnectToolStripMenuItem1.Text = "Stop";
             this.ipDisconnectToolStripMenuItem1.Click += new System.EventHandler(this.IpDisconnectToolStripMenuItem_Click);
             // 
             // apkInstallToolStripMenuItem
@@ -256,21 +256,22 @@
             this.deviceRebootToolStripMenuItem,
             this.deviceShutdownToolStripMenuItem});
             this.DeviceToolStripMenuItem.Name = "DeviceToolStripMenuItem";
-            this.DeviceToolStripMenuItem.Size = new System.Drawing.Size(45, 20);
-            this.DeviceToolStripMenuItem.Text = "端末";
+            this.DeviceToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
+            this.DeviceToolStripMenuItem.Text = "Device";
+            this.DeviceToolStripMenuItem.Click += new System.EventHandler(this.DeviceToolStripMenuItem_Click);
             // 
             // deviceRebootToolStripMenuItem
             // 
             this.deviceRebootToolStripMenuItem.Name = "deviceRebootToolStripMenuItem";
-            this.deviceRebootToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
-            this.deviceRebootToolStripMenuItem.Text = "再起動";
+            this.deviceRebootToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.deviceRebootToolStripMenuItem.Text = "Reboot";
             this.deviceRebootToolStripMenuItem.Click += new System.EventHandler(this.DeviceRebootToolStripMenuItem_Click);
             // 
             // deviceShutdownToolStripMenuItem
             // 
             this.deviceShutdownToolStripMenuItem.Name = "deviceShutdownToolStripMenuItem";
-            this.deviceShutdownToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
-            this.deviceShutdownToolStripMenuItem.Text = "シャットダウン";
+            this.deviceShutdownToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.deviceShutdownToolStripMenuItem.Text = "Shutdown";
             this.deviceShutdownToolStripMenuItem.Click += new System.EventHandler(this.DeviceShutdownToolStripMenuItem_Click_1);
             // 
             // toolStripMenuItem1

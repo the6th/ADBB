@@ -87,8 +87,8 @@ namespace ADBB
         /// <returns></returns>
         private Task<string[]> MldbCmd(CancellationToken ct, Device device, params string[] args)
         {
-            if (device == null) throw new Exception("端末が選択されていません");
-            if (device.Type == "unauthorized") throw new Exception("端末接続が許可されていません。端末上からこのPCからの接続を許可してください");
+            if (device == null) throw new Exception("Device is not selected.");
+            if (device.Type == "unauthorized") throw new Exception("Permission denied.please set permission on your MagicLeap.");
 
             var tcs = new TaskCompletionSource<string[]>();
             Task.Run(() =>
@@ -165,8 +165,8 @@ namespace ADBB
         /// <returns></returns>
         private Task<string[]> AdbCmd(CancellationToken ct, Device device, params string[] args)
         {
-            if (device == null) throw new Exception("端末が選択されていません");
-            if (device.Type == "unauthorized") throw new Exception("端末接続が許可されていません。端末上からこのPCからの接続を許可してください");
+            if (device == null) throw new Exception("Device is not selected.");
+            if (device.Type == "unauthorized") throw new Exception("Permission denied.please set permission on your Android.");
 
             var tcs = new TaskCompletionSource<string[]>();
             Task.Run(() =>
@@ -225,7 +225,7 @@ namespace ADBB
         /// <returns></returns>
         public Task<IEnumerable<Device>> GetDeviceList(IProgress<AdbProgressData> progress)
         {
-            return ProgressWrap("デバイス一覧取得", progress, async () =>
+            return ProgressWrap("Get device list", progress, async () =>
             {
                 type = DEVICETYPE.UNKNOWN;
 
@@ -259,7 +259,7 @@ namespace ADBB
         /// <returns></returns>
         public Task<IEnumerable<PackageData>> GetPackageList(Device device, IProgress<AdbProgressData> progress)
         {
-            return ProgressWrap("パッケージリスト取得", progress, async () =>
+            return ProgressWrap("Get Package list", progress, async () =>
             {
                 string[] result;
 
@@ -285,7 +285,7 @@ namespace ADBB
         /// <returns></returns>
         public Task<bool> UnInstallPackage(Device device, PackageData package, IProgress<AdbProgressData> progress)
         {
-            return ProgressWrap("アンインストール", progress, async () =>
+            return ProgressWrap("Uninstalling..", progress, async () =>
             {
                 using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10)))
                 {
@@ -316,7 +316,7 @@ namespace ADBB
         /// <returns></returns>
         public Task<bool> LunchPackage(Device device, PackageData package, IProgress<AdbProgressData> progress)
         {
-            return ProgressWrap("アプリケーション起動", progress, async () =>
+            return ProgressWrap("Launch App", progress, async () =>
             {
                 string[] result;
                 bool isSuccess = false;
@@ -346,7 +346,7 @@ namespace ADBB
         /// <returns></returns>
         public Task<bool> StopPackage(Device device, PackageData package, IProgress<AdbProgressData> progress)
         {
-            return ProgressWrap("アプリケーション停止処理", progress, async () =>
+            return ProgressWrap("Terminate App", progress, async () =>
             {
                 string[] result;
                 if (type == DEVICETYPE.MAGICLEAP)
@@ -369,7 +369,7 @@ namespace ADBB
         /// <returns></returns>
         public Task<bool> DownloadApk(Device device, PackageData package, string path, IProgress<AdbProgressData> progress)
         {
-            return ProgressWrap("APKダウンロード", progress, async () =>
+            return ProgressWrap("Download Apk..", progress, async () =>
             {
                 string[] result;
                 bool isSuccess = false;
@@ -398,7 +398,7 @@ namespace ADBB
         /// <returns></returns>
         public Task<bool> InstallPackage(Device device, string filePath, IProgress<AdbProgressData> progress)
         {
-            return ProgressWrap("インストール", progress, async () =>
+            return ProgressWrap("Install..", progress, async () =>
             {
                 using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(120)))
                 {
@@ -428,7 +428,7 @@ namespace ADBB
         /// <returns></returns>
         public Task<bool> ConnectIp(Device device, IProgress<AdbProgressData> progress)
         {
-            return ProgressWrap("IP接続", progress, async () =>
+            return ProgressWrap("Connect the device using TCP", progress, async () =>
             {
                 string[] result;
 
@@ -474,7 +474,7 @@ namespace ADBB
         /// <returns></returns>
         public Task<bool> DisconnectIp(IProgress<AdbProgressData> progress)
         {
-            return ProgressWrap("IP切断", progress, async () =>
+            return ProgressWrap("Disconnect TCP", progress, async () =>
             {
                 await AdbCmd(Device.None, "disconnect");
                 return true;
@@ -489,7 +489,7 @@ namespace ADBB
         /// <returns></returns>
         public Task<bool> Shutdown(Device device, IProgress<AdbProgressData> progress)
         {
-            return ProgressWrap("シャットダウン", progress, async () =>
+            return ProgressWrap("Shutdown", progress, async () =>
             {
                 if (type == DEVICETYPE.MAGICLEAP)
                 {
@@ -537,14 +537,14 @@ namespace ADBB
         {
             try
             {
-                progress.Report(new AdbProgressData(name + "開始"));
+                progress.Report(new AdbProgressData(name + "Start.."));
                 var result = await proc.Invoke();
-                progress.Report(new AdbProgressData(name + "成功", false, true, isRequireCompleteDialog));
+                progress.Report(new AdbProgressData(name + "Success", false, true, isRequireCompleteDialog));
                 return result;
             }
             catch (Exception ex)
             {
-                progress.Report(new AdbProgressData(name + "失敗", ex));
+                progress.Report(new AdbProgressData(name + "Failed", ex));
             }
             return default(T);
         }
