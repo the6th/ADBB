@@ -87,9 +87,6 @@ namespace ADBB
         /// <returns></returns>
         private Task<string[]> MldbCmd(CancellationToken ct, Device device, params string[] args)
         {
-            Console.WriteLine($"MldbCmd!");
-
-
             if (device == null) throw new Exception("端末が選択されていません");
             if (device.Type == "unauthorized") throw new Exception("端末接続が許可されていません。端末上からこのPCからの接続を許可してください");
 
@@ -120,7 +117,7 @@ namespace ADBB
 
                 app.Arguments = string.Join(" ", args);
 
-                if ( device.Name != "None")
+                if (device.Name != "None")
                 {
                     app.Arguments = $"-s {device.Name} " + app.Arguments;
                 }
@@ -168,8 +165,6 @@ namespace ADBB
         /// <returns></returns>
         private Task<string[]> AdbCmd(CancellationToken ct, Device device, params string[] args)
         {
-            Console.WriteLine($"AdbCmd!");
-
             if (device == null) throw new Exception("端末が選択されていません");
             if (device.Type == "unauthorized") throw new Exception("端末接続が許可されていません。端末上からこのPCからの接続を許可してください");
 
@@ -232,10 +227,14 @@ namespace ADBB
         {
             return ProgressWrap("デバイス一覧取得", progress, async () =>
             {
+                type = DEVICETYPE.UNKNOWN;
+
+                Console.WriteLine($"type {type.ToString()}");
                 var result = await AdbCmd(Device.None, "devices");
                 //AndroidDeviceが見つかった場合
                 if (result.Length > 1)
                 {
+                    //if (type == DEVICETYPE.UNKNOWN)
                     type = DEVICETYPE.ANDROID;
                 }
                 else
@@ -290,8 +289,18 @@ namespace ADBB
             {
                 using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10)))
                 {
-                    var result = await AdbCmd(cts.Token, device, "uninstall", package.Name);
-                    var isSuccess = result.FirstOrDefault()?.IndexOf("Success") >= 0;
+                    string[] result;
+                    bool isSuccess = false;
+                    if (type == DEVICETYPE.MAGICLEAP)
+                    {
+                        result = await MldbCmd(device, "uninstall", package.Name);
+                        isSuccess = result.LastOrDefault()?.IndexOf("Successfully ") >= 0;
+                    }
+                    else
+                    {
+                        result = await AdbCmd(cts.Token, device, "uninstall", package.Name);
+                        isSuccess = result.FirstOrDefault()?.IndexOf("Success") >= 0;
+                    }
                     if (isSuccess) return true;
                     throw new Exception();
                 }
@@ -309,11 +318,20 @@ namespace ADBB
         {
             return ProgressWrap("アプリケーション起動", progress, async () =>
             {
-                var dumpResult = await AdbCmd(device, "shell", $"\"pm dump {package.Name} | grep -A 2 android.intent.action.MAIN | head -2 | tail -1\"");
-                var packageActivityName = dumpResult[1].Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries).ElementAtOrDefault(1);
-                var result = await AdbCmd(device, "shell am start", "-n", packageActivityName);
-
-                var isSuccess = result.FirstOrDefault()?.IndexOf("Success") >= 0 || result.FirstOrDefault()?.IndexOf("Starting") >= 0;
+                string[] result;
+                bool isSuccess = false;
+                if (type == DEVICETYPE.MAGICLEAP)
+                {
+                    result = await MldbCmd(device, "launch", package.Name);
+                    isSuccess = result.LastOrDefault()?.IndexOf("Success") >= 0;
+                }
+                else
+                {
+                    var dumpResult = await AdbCmd(device, "shell", $"\"pm dump {package.Name} | grep -A 2 android.intent.action.MAIN | head -2 | tail -1\"");
+                    var packageActivityName = dumpResult[1].Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries).ElementAtOrDefault(1);
+                    result = await AdbCmd(device, "shell am start", "-n", packageActivityName);
+                    isSuccess = result.FirstOrDefault()?.IndexOf("Success") >= 0 || result.FirstOrDefault()?.IndexOf("Starting") >= 0;
+                }
                 if (isSuccess) return true;
                 throw new Exception();
             });
@@ -330,7 +348,15 @@ namespace ADBB
         {
             return ProgressWrap("アプリケーション停止処理", progress, async () =>
             {
-                var result = await AdbCmd(device, "shell am force-stop", package.Name);
+                string[] result;
+                if (type == DEVICETYPE.MAGICLEAP)
+                {
+                    result = await MldbCmd(device, "terminate", package.Name);
+                }
+                else
+                {
+                    result = await AdbCmd(device, "shell am force-stop", package.Name);
+                }
                 return true;
             });
         }
@@ -345,8 +371,19 @@ namespace ADBB
         {
             return ProgressWrap("APKダウンロード", progress, async () =>
             {
-                var result = await AdbCmd(device, "pull", package.ApkPath, path);
-                var isSuccess = result.LastOrDefault()?.IndexOf("pulled") >= 0;
+                string[] result;
+                bool isSuccess = false;
+                if (type == DEVICETYPE.MAGICLEAP)
+                {
+                    //MagicLeapは未対応
+                    return false;
+                    throw new Exception();
+                }
+                else
+                {
+                    result = await AdbCmd(device, "pull", package.ApkPath, path);
+                    isSuccess = result.LastOrDefault()?.IndexOf("pulled") >= 0;
+                }
                 if (isSuccess) return true;
                 throw new Exception();
             });
@@ -365,9 +402,18 @@ namespace ADBB
             {
                 using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(120)))
                 {
-                    var result = await AdbCmd(cts.Token, device, "install", "-r", filePath);
-
-                    var isSuccess = result.Any(s => s.IndexOf("Success") >= 0);
+                    string[] result;
+                    bool isSuccess = false;
+                    if (type == DEVICETYPE.MAGICLEAP)
+                    {
+                        result = await MldbCmd(cts.Token, device, "install", "-u", filePath);
+                        isSuccess = result.Any(s => s.IndexOf("Successfully") >= 0);
+                    }
+                    else
+                    {
+                        result = await AdbCmd(cts.Token, device, "install", "-r", filePath);
+                        isSuccess = result.Any(s => s.IndexOf("Success") >= 0);
+                    }
                     if (isSuccess) return true;
                     throw new Exception();
                 }
@@ -388,7 +434,6 @@ namespace ADBB
 
                 if (type == DEVICETYPE.MAGICLEAP)
                 {
-
                     result = await AdbCmd(device, "wifi status");
                     var res = result.Select(s => s.Split(new[] { "IpAddr=", " " }, StringSplitOptions.None));
 
@@ -398,7 +443,7 @@ namespace ADBB
                     //Console.WriteLine("XXX:" + result[0]);
                     await Task.Delay(1000);//IP接続した直後はUSB接続が出てこないときがある
 
-                    await MldbCmd(Device.None, "tcpip", "-p","5555");
+                    await MldbCmd(Device.None, "tcpip", "-p", "5555");
                     await Task.Delay(1000);//IP接続した直後はUSB接続が出てこないときがある
 
                     var connectResult = await MldbCmd(device, "connect", result[0]);
@@ -446,7 +491,14 @@ namespace ADBB
         {
             return ProgressWrap("シャットダウン", progress, async () =>
             {
-                await AdbCmd(device, "shell", "reboot -p");
+                if (type == DEVICETYPE.MAGICLEAP)
+                {
+                    await MldbCmd(device, "shutdown");
+                }
+                else
+                {
+                    await AdbCmd(device, "shell", "reboot -p");
+                }
                 return true;
             });
         }
@@ -461,7 +513,14 @@ namespace ADBB
         {
             return ProgressWrap("端末再起動", progress, async () =>
             {
-                await AdbCmd(device, "shell", "reboot");
+                if (type == DEVICETYPE.MAGICLEAP)
+                {
+                    await MldbCmd(device, "reboot");
+                }
+                else
+                {
+                    await AdbCmd(device, "shell", "reboot");
+                }
                 return true;
             });
         }

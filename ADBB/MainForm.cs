@@ -25,10 +25,11 @@ namespace ADBB
             _adb = new AdbCommand(Properties.Settings.Default.adbPath, Properties.Settings.Default.mldbPath);
 
             //ADB.exeへのパスが設定されたら作り直し
-            Properties.Settings.Default.PropertyChanged += (sender, args) => {
+            Properties.Settings.Default.PropertyChanged += (sender, args) =>
+            {
                 _adb = new AdbCommand(Properties.Settings.Default.adbPath, Properties.Settings.Default.mldbPath);
             };
-            
+
             Observable.FromEventPattern(textBox1, "TextChanged")
                 .Select(pattern => textBox1.Text)
                 .DistinctUntilChanged()
@@ -38,7 +39,8 @@ namespace ADBB
 
             packageDataGrid.CellContextMenuStripNeeded += PackageDataGridCellContextMenuStripNeeded;
 
-            progress = new Progress<AdbCommand.AdbProgressData>(async data => {
+            progress = new Progress<AdbCommand.AdbProgressData>(async data =>
+            {
                 if (data.IsRequireDialog)
                 {
                     if (data.IsError)
@@ -107,9 +109,9 @@ namespace ADBB
         private async void uninstallToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var result = MessageBox.Show($"{_selectPackage.Name} をアンインストールしてよろしいですか？", "注意", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation);
-            if (result == DialogResult.Cancel) return ;
-            var unInstallResult = await _adb.UnInstallPackage(_targetDevice,_selectPackage, progress);
-            if (unInstallResult == false) return ;
+            if (result == DialogResult.Cancel) return;
+            var unInstallResult = await _adb.UnInstallPackage(_targetDevice, _selectPackage, progress);
+            if (unInstallResult == false) return;
             await UpdatePackageList();
         }
 
@@ -122,7 +124,7 @@ namespace ADBB
 
         private void 起動ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _adb.LunchPackage(_targetDevice, _selectPackage,progress);
+            _adb.LunchPackage(_targetDevice, _selectPackage, progress);
         }
 
         private void DeviceUpdateToolStripMenuItem_Click(object sender, EventArgs e)
@@ -132,7 +134,7 @@ namespace ADBB
 
         private async void IpConnectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var result = await _adb.ConnectIp(_targetDevice,progress);
+            var result = await _adb.ConnectIp(_targetDevice, progress);
             if (result == false) return;
             await Task.Delay(1000);//IP接続した直後はUSB接続が出てこないときがある
             await UpdateDeviceList();
@@ -161,15 +163,29 @@ namespace ADBB
 
         private async void APKInstallToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var openFileDialog = new OpenFileDialog{
-                Filter = "Androidファイル|*.apk",
-                Title = "インストールするAPKファイルを選択"
-            };
+            OpenFileDialog openFileDialog;
+            if (_adb.type == DEVICETYPE.MAGICLEAP)
+            {
+                openFileDialog = new OpenFileDialog
+                {
+                    Filter = "MagicLeap Application|*.mpk",
+                    Title = "インストールするAPKファイルを選択"
+                };
+            }
+            else
+            {
+                openFileDialog = new OpenFileDialog
+                {
+                    Filter = "Android Application|*.apk",
+                    Title = "インストールするAPKファイルを選択"
+                };
+            }
+
             var result = openFileDialog.ShowDialog();
 
             if (result != DialogResult.OK) return;
 
-            var installResult = await _adb.InstallPackage(_targetDevice, openFileDialog.FileName,progress);
+            var installResult = await _adb.InstallPackage(_targetDevice, openFileDialog.FileName, progress);
             if (installResult == false) return;
             await UpdatePackageList();
         }
@@ -185,13 +201,14 @@ namespace ADBB
         {
             var result = MessageBox.Show($"Device:{_targetDevice.Name} を強制再起動してよろしいですか？", "強制再起動確認", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
             if (result == DialogResult.Cancel) return;
-            _adb.Reboot(_targetDevice,progress);
+            _adb.Reboot(_targetDevice, progress);
         }
 
 
         private void pathToADBToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var openFileDialog = new OpenFileDialog{
+            var openFileDialog = new OpenFileDialog
+            {
                 Filter = "adb.exe|adb.exe",
                 Title = "adb.exeのパス設定"
             };
@@ -221,12 +238,12 @@ namespace ADBB
 
         private void abortToolStripMenuItem2_Click(object sender, EventArgs e)
         {
-            _adb.StopPackage(_targetDevice, _selectPackage,progress);
+            _adb.StopPackage(_targetDevice, _selectPackage, progress);
         }
 
         private async Task<bool> UpdatePackageList()
         {
-            var package = await _adb.GetPackageList(_targetDevice,progress);
+            var package = await _adb.GetPackageList(_targetDevice, progress);
             if (package == null) return false;
             dispData = package.ToList();
             packageDataGrid.DataSource = dispData;
@@ -239,6 +256,8 @@ namespace ADBB
             comboBox1.DataSource = new List<Device>();
             var result = await _adb.GetDeviceList(progress);
 
+            this.Text = $"ADBB ({_adb.type.ToString()})";
+
             if (result?.Any() != true)
             {
                 MessageBox.Show("デバイスが見つかりません", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -248,7 +267,6 @@ namespace ADBB
             }
 
             comboBox1.DataSource = result.ToList();
-            this.Text = $"ADBB ({_adb.type.ToString()})";
             return true;
         }
 
@@ -276,18 +294,27 @@ namespace ADBB
 
         private void APKToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var saveFileDialog = new SaveFileDialog(){
-                AddExtension = true,
-                DefaultExt = "apk",
-                Title = "ファイルダウンロード先を選択してください",
-                Filter = "Androidファイル|*.apk"
+            if (_adb.type == DEVICETYPE.MAGICLEAP)
+            {
+                MessageBox.Show("Not supported on MagicLeap ", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-            };
+            }
+            else
+            {
+                var saveFileDialog = new SaveFileDialog()
+                {
+                    AddExtension = true,
+                    DefaultExt = "apk",
+                    Title = "ファイルダウンロード先を選択してください",
+                    Filter = "Androidファイル|*.apk"
 
-            var result = saveFileDialog.ShowDialog();
+                };
 
-            if (result != DialogResult.OK) return;
-            _adb.DownloadApk(_targetDevice, _selectPackage,  saveFileDialog.FileName, progress);
+                var result = saveFileDialog.ShowDialog();
+
+                if (result != DialogResult.OK) return;
+                _adb.DownloadApk(_targetDevice, _selectPackage, saveFileDialog.FileName, progress);
+            }
         }
 
 

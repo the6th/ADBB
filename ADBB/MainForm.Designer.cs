@@ -246,8 +246,8 @@
             // apkInstallToolStripMenuItem
             // 
             this.apkInstallToolStripMenuItem.Name = "apkInstallToolStripMenuItem";
-            this.apkInstallToolStripMenuItem.Size = new System.Drawing.Size(101, 20);
-            this.apkInstallToolStripMenuItem.Text = "APKインストール";
+            this.apkInstallToolStripMenuItem.Size = new System.Drawing.Size(97, 20);
+            this.apkInstallToolStripMenuItem.Text = "Install Package";
             this.apkInstallToolStripMenuItem.Click += new System.EventHandler(this.APKInstallToolStripMenuItem_Click);
             // 
             // DeviceToolStripMenuItem
@@ -285,14 +285,14 @@
             // pathToADBToolStripMenuItem
             // 
             this.pathToADBToolStripMenuItem.Name = "pathToADBToolStripMenuItem";
-            this.pathToADBToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.pathToADBToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.pathToADBToolStripMenuItem.Text = "Path To ADB";
             this.pathToADBToolStripMenuItem.Click += new System.EventHandler(this.pathToADBToolStripMenuItem_Click);
             // 
             // pathToMLDBToolStripMenuItem
             // 
             this.pathToMLDBToolStripMenuItem.Name = "pathToMLDBToolStripMenuItem";
-            this.pathToMLDBToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.pathToMLDBToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.pathToMLDBToolStripMenuItem.Text = "Path To MLDB";
             this.pathToMLDBToolStripMenuItem.Click += new System.EventHandler(this.pathToMLDBToolStripMenuItem_Click);
             // 
