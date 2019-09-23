@@ -129,13 +129,13 @@
             this.abortToolStripMenuItem,
             this.apkDownloadToolStripMenuItem});
             this.PackageCellContextMenuStrip.Name = "PackageCellContextMenuStrip";
-            this.PackageCellContextMenuStrip.Size = new System.Drawing.Size(155, 98);
+            this.PackageCellContextMenuStrip.Size = new System.Drawing.Size(181, 120);
             // 
             // launchToolStripMenuItem
             // 
             this.launchToolStripMenuItem.Name = "launchToolStripMenuItem";
-            this.launchToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
-            this.launchToolStripMenuItem.Text = "起動";
+            this.launchToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.launchToolStripMenuItem.Text = "Start";
             this.launchToolStripMenuItem.Click += new System.EventHandler(this.起動ToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
@@ -146,22 +146,22 @@
             // uninstallToolStripMenuItem
             // 
             this.uninstallToolStripMenuItem.Name = "uninstallToolStripMenuItem";
-            this.uninstallToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
-            this.uninstallToolStripMenuItem.Text = "アンインストール";
+            this.uninstallToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.uninstallToolStripMenuItem.Text = "Uninstall";
             this.uninstallToolStripMenuItem.Click += new System.EventHandler(this.uninstallToolStripMenuItem_Click);
             // 
             // abortToolStripMenuItem
             // 
             this.abortToolStripMenuItem.Name = "abortToolStripMenuItem";
-            this.abortToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
-            this.abortToolStripMenuItem.Text = "強制終了";
+            this.abortToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.abortToolStripMenuItem.Text = "Stop";
             this.abortToolStripMenuItem.Click += new System.EventHandler(this.abortToolStripMenuItem2_Click);
             // 
             // apkDownloadToolStripMenuItem
             // 
             this.apkDownloadToolStripMenuItem.Name = "apkDownloadToolStripMenuItem";
-            this.apkDownloadToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
-            this.apkDownloadToolStripMenuItem.Text = "APKダウンロード";
+            this.apkDownloadToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.apkDownloadToolStripMenuItem.Text = "Download APK";
             this.apkDownloadToolStripMenuItem.Click += new System.EventHandler(this.APKToolStripMenuItem_Click);
             // 
             // comboBox1
@@ -232,14 +232,14 @@
             // ipConnectToolStripMenuItem1
             // 
             this.ipConnectToolStripMenuItem1.Name = "ipConnectToolStripMenuItem1";
-            this.ipConnectToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.ipConnectToolStripMenuItem1.Size = new System.Drawing.Size(158, 22);
             this.ipConnectToolStripMenuItem1.Text = "Start (Port 5555)";
             this.ipConnectToolStripMenuItem1.Click += new System.EventHandler(this.IpConnectToolStripMenuItem_Click);
             // 
             // ipDisconnectToolStripMenuItem1
             // 
             this.ipDisconnectToolStripMenuItem1.Name = "ipDisconnectToolStripMenuItem1";
-            this.ipDisconnectToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.ipDisconnectToolStripMenuItem1.Size = new System.Drawing.Size(158, 22);
             this.ipDisconnectToolStripMenuItem1.Text = "Stop";
             this.ipDisconnectToolStripMenuItem1.Click += new System.EventHandler(this.IpDisconnectToolStripMenuItem_Click);
             // 
@@ -263,14 +263,14 @@
             // deviceRebootToolStripMenuItem
             // 
             this.deviceRebootToolStripMenuItem.Name = "deviceRebootToolStripMenuItem";
-            this.deviceRebootToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.deviceRebootToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
             this.deviceRebootToolStripMenuItem.Text = "Reboot";
             this.deviceRebootToolStripMenuItem.Click += new System.EventHandler(this.DeviceRebootToolStripMenuItem_Click);
             // 
             // deviceShutdownToolStripMenuItem
             // 
             this.deviceShutdownToolStripMenuItem.Name = "deviceShutdownToolStripMenuItem";
-            this.deviceShutdownToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.deviceShutdownToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
             this.deviceShutdownToolStripMenuItem.Text = "Shutdown";
             this.deviceShutdownToolStripMenuItem.Click += new System.EventHandler(this.DeviceShutdownToolStripMenuItem_Click_1);
             // 
