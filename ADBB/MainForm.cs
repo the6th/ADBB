@@ -22,6 +22,10 @@ namespace ADBB
         {
             InitializeComponent();
 
+            Console.WriteLine($"adb path is {Properties.Settings.Default.adbPath}");
+            Console.WriteLine($"mldb path is {Properties.Settings.Default.mldbPath}");
+
+
             _adb = new AdbCommand(Properties.Settings.Default.adbPath, Properties.Settings.Default.mldbPath);
 
             //ADB.exeへのパスが設定されたら作り直し
@@ -97,13 +101,23 @@ namespace ADBB
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(Properties.Settings.Default.adbPath) || string.IsNullOrWhiteSpace(Properties.Settings.Default.mldbPath))
+            //if (true)
+            if (string.IsNullOrWhiteSpace(Properties.Settings.Default.adbPath) && string.IsNullOrWhiteSpace(Properties.Settings.Default.adbPath))
             {
-                MessageBox.Show("Setup the path to adb or mldb(Settings > )", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Setup SDK path \r\n[Settings] > [Path to ADB]\r\n      or \r\n[Settings] > [Path to MLDB]", "Welcome!!", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+
+            if (!string.IsNullOrWhiteSpace(Properties.Settings.Default.adbPath))
+                pathToADBToolStripMenuItem.Text = $"Path to ADB: ({Properties.Settings.Default.adbPath})";
+            else
+                pathToADBToolStripMenuItem.Text = $"Path to ADB: (none)";
+
+            if (!string.IsNullOrWhiteSpace(Properties.Settings.Default.mldbPath))
+                pathToMLDBToolStripMenuItem.Text = $"Path to MLDB: ({Properties.Settings.Default.mldbPath})";
+            else
+                pathToMLDBToolStripMenuItem.Text = $"Path to MLDB: (none)";
+
             UpdateDeviceList();
-
-
         }
 
         private async void uninstallToolStripMenuItem_Click(object sender, EventArgs e)
@@ -260,7 +274,7 @@ namespace ADBB
 
             if (result?.Any() != true)
             {
-                MessageBox.Show("Device(s) not found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Device(s) not found", "Connect a device", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 _targetDevice = null;
                 UpdateToolbarMenuEnable();
                 return false;
